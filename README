@@ -1,0 +1,7 @@
+# How to Install 
+
+When docker engine is running :
+
+```
+npx supabase start
+```
