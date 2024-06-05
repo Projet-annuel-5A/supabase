@@ -39,7 +39,7 @@ Deno.serve(async (req) => {
 
 		} else {
 			console.log(`Agreement_ok field updated for interview with agreement_doc_id = ${documentId}`);
-			console.log('Saving pdf file in storage ...');
+			console.log('Retrieving pdf file from Sign now');
 
 			const bearer = '678a53fb93f401c3a511ccece2ee97b557eda4b416cb9c931e61fcf1db8a1329';
 			const pdfUrl = `https://api.signnow.com/document/${documentId}/download?type=collapsed`;
@@ -57,8 +57,12 @@ Deno.serve(async (req) => {
 				throw new Error(`Network response was not ok: ${pdfDownloadResponse.statusText}`);
 			}
 
+			console.log('Pdf file successfully retrieved');
+
 			const blob = await pdfDownloadResponse.blob();
 			const file = new File([blob], `${documentId}.pdf`, { type: 'application/pdf' });
+
+			console.log('Storing pdf file in storage ...');
 
 			const { data: uploadData, error: uploadError } = await supabase.storage
 				.from('agreement_files')
@@ -70,6 +74,8 @@ Deno.serve(async (req) => {
 			if (uploadError) {
 				throw new Error(`Failed to upload file to Supabase: ${uploadError.message}`);
 			}
+
+			console.log('Pdf file successfully stored in storage')
 		}
 
 		return new Response("Notification received", { status: 200 });
