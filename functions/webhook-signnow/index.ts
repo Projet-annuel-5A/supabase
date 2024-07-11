@@ -38,10 +38,11 @@ Deno.serve(async (req) => {
 			throw error
 
 		} else {
+			
 			console.log(`Agreement_ok field updated for interview with agreement_doc_id = ${documentId}`);
 			console.log('Retrieving pdf file from Sign now');
 
-			const bearer = '678a53fb93f401c3a511ccece2ee97b557eda4b416cb9c931e61fcf1db8a1329';
+			const bearer = Deno.env.get('SIGNNOW_BEARER_TOKEN') ?? '';
 			const pdfUrl = `https://api.signnow.com/document/${documentId}/download?type=collapsed`;
 			const headers = {
 				"Authorization": `Bearer ${bearer}`,
